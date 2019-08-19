@@ -23,29 +23,28 @@ def init_game(cartes):
 
 def check_wall(listed_game, robot_position, move_force, user_input):
     i = 1
-    if(user_input == "O"):
+    if(user_input[0] == "O"):
         while(i <= move_force):
             if listed_game[robot_position - i] == "O":
                 return 1
             i += 1
-    elif(user_input == "E"):
+    elif(user_input[0] == "E"):
         while(i <= move_force):
             if listed_game[robot_position + i] == "0":
                 return 1
             i += 1
-    elif(user_input == "N"):
+    elif(user_input[0] == "N"):
         #On va checker la ligne correspondante soit la position_robor - largeur du tableau + 1 (pour le \n) * le nb de case que l'on veut monter
         while(i <= move_force * 11):
             if listed_game[robot_position - 11 * i] == "O":
                 return 1
             i += 1
-    elif(user_input == "S"):
+    elif(user_input[0] == "S"):
         #Pareil que pour N sauf qu'on additionne à la largeur du tab pour regarder une case plus bas
         while(i <= move_force * 11):
             if listed_game[robot_position + 11 - 1] == "0":
                 return 1
             i += 1
-    
     return 0
 
 def move(user_input, listed_game):
@@ -56,26 +55,25 @@ def move(user_input, listed_game):
         try:
             move_force = int(user_input[1])
         except ValueError:
-            print("Conversion impossible, le user_input[1] n'est pas un nb")
+            print("Vous n'avez pas entré un nombre en second argument")
     else :
-        print("Debug : pas de move force precise donc 1 par def")
         move_force = 1
 
     robot_position = 0
     while(listed_game[robot_position] != 'X'):
                 robot_position += 1
-    print("Move = {}".format(move_force))
+
+
     if user_input[0] == "O": #-1 dans la liste
-        if listed_game[robot_position - move_force] == "O":
-            print("Déplacement impossible, vous bourrinez le mur")
-            exit()
-        listed_game[robot_position], listed_game[robot_position - move_force] = listed_game[robot_position - move_force], listed_game[robot_position]
-        print("".join(listed_game))
+        if(check_wall(listed_game, robot_position, move_force, user_input) != 0):
+            print("Déplacement impossible, vous heurtez un mur")
+        else :
+            listed_game[robot_position], listed_game[robot_position - move_force] = listed_game[robot_position - move_force], listed_game[robot_position]
+            print("".join(listed_game))
 
     elif user_input[0] == "E":
         if listed_game[robot_position + move_force ] == "O" :
             print("Déplacement impossible, vous bourrinez le mur")
-            exit()
         listed_game[robot_position], listed_game[robot_position + move_force] = listed_game[robot_position + move_force], listed_game[robot_position]
         print("".join(listed_game))
     
@@ -99,6 +97,5 @@ def move(user_input, listed_game):
         i += 1
     robot_position = i
     print("Debug --> Apres mouvement la postion du robot est : {}".format(robot_position))
-
 
     return listed_game
