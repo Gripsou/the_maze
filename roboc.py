@@ -73,6 +73,7 @@ while (user_input != 'Q') :
                 mon_pickler.dump(current_game)
                 print("Debug : Partie saved !")
         print(''.join(current_game))
+        robot_position = 0
         while(listed_game[robot_position] != 'X'):
                 robot_position += 1
         if(robot_position != position_sortie):
