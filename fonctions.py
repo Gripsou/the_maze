@@ -30,19 +30,19 @@ def check_wall(listed_game, robot_position, move_force, user_input):
             i += 1
     elif(user_input[0] == "E"):
         while(i <= move_force):
-            if listed_game[robot_position + i] == "0":
+            if listed_game[robot_position + i] == "O":
                 return 1
             i += 1
     elif(user_input[0] == "N"):
         #On va checker la ligne correspondante soit la position_robor - largeur du tableau + 1 (pour le \n) * le nb de case que l'on veut monter
-        while(i <= move_force * 11):
+        while(i <= move_force):
             if listed_game[robot_position - 11 * i] == "O":
                 return 1
             i += 1
     elif(user_input[0] == "S"):
         #Pareil que pour N sauf qu'on additionne à la largeur du tab pour regarder une case plus bas
-        while(i <= move_force * 11):
-            if listed_game[robot_position + 11 - 1] == "0":
+        while(i <= move_force):
+            if listed_game[robot_position + 11 * i] == "O":
                 return 1
             i += 1
     return 0
@@ -63,32 +63,17 @@ def move(user_input, listed_game):
     while(listed_game[robot_position] != 'X'):
                 robot_position += 1
 
-
-    if user_input[0] == "O": #-1 dans la liste
-        if(check_wall(listed_game, robot_position, move_force, user_input) != 0):
-            print("Déplacement impossible, vous heurtez un mur")
-        else :
+    if(check_wall(listed_game, robot_position, move_force, user_input) != 0):
+        print("Déplacement impossible, vous heurtez un mur")
+    else :
+        if user_input[0] == "O": #On ne regarde que la direction
             listed_game[robot_position], listed_game[robot_position - move_force] = listed_game[robot_position - move_force], listed_game[robot_position]
-            print("".join(listed_game))
-
-    elif user_input[0] == "E":
-        if listed_game[robot_position + move_force ] == "O" :
-            print("Déplacement impossible, vous bourrinez le mur")
-        listed_game[robot_position], listed_game[robot_position + move_force] = listed_game[robot_position + move_force], listed_game[robot_position]
-        print("".join(listed_game))
-    
-    elif user_input[0] == "N":
-        if listed_game[robot_position - (11 * move_force)] == "O":
-            print("Déplacement impossible, vous bourrinez le mur")
-            exit()
-        listed_game[robot_position], listed_game[robot_position - (11 * move_force)] = listed_game[robot_position - (11 * move_force)], listed_game[robot_position]
-        print("".join(listed_game))
-
-    elif user_input[0] == "S":
-        if listed_game[robot_position + (11 * move_force)] == "O":
-            print("Déplacement impossible, vous bourrinez le mur")
-            exit()
-        listed_game[robot_position], listed_game[robot_position + (11 * move_force)] = listed_game[robot_position + (11 * move_force)], listed_game[robot_position]
+        elif user_input[0] == "E":
+            listed_game[robot_position], listed_game[robot_position + move_force] = listed_game[robot_position + move_force], listed_game[robot_position]
+        elif user_input[0] == "N":
+            listed_game[robot_position], listed_game[robot_position - (11 * move_force)] = listed_game[robot_position - (11 * move_force)], listed_game[robot_position]
+        elif user_input[0] == "S":
+            listed_game[robot_position], listed_game[robot_position + (11 * move_force)] = listed_game[robot_position + (11 * move_force)], listed_game[robot_position]
         print("".join(listed_game))
 
     robot_position = 0
