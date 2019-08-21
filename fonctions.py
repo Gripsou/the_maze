@@ -27,30 +27,45 @@ def check_wall(listed_game, robot_position, move_force, user_input):
         while(i <= move_force):
             if listed_game[robot_position - i] == "O":
                 return 1
+            elif listed_game[robot_position - i] == "U":
+                return 2
+            elif listed_game[robot_position - i] == ".":
+                return 3
             i += 1
     elif(user_input[0] == "E"):
         while(i <= move_force):
             if listed_game[robot_position + i] == "O":
                 return 1
+            if listed_game[robot_position + i] == "U":
+                return 2
+            if listed_game[robot_position + i] == ".":
+                return 3
             i += 1
     elif(user_input[0] == "N"):
         #On va checker la ligne correspondante soit la position_robor - largeur du tableau + 1 (pour le \n) * le nb de case que l'on veut monter
         while(i <= move_force):
             if listed_game[robot_position - 11 * i] == "O":
                 return 1
+            elif listed_game[robot_position - 11 * i] == "U":
+                return 2
+            elif listed_game[robot_position - 11 * i] == ".":
+                return 3
             i += 1
     elif(user_input[0] == "S"):
         #Pareil que pour N sauf qu'on additionne à la largeur du tab pour regarder une case plus bas
         while(i <= move_force):
             if listed_game[robot_position + 11 * i] == "O":
                 return 1
+            elif listed_game[robot_position + 11 * i] == "U":
+                return 2
+            elif listed_game[robot_position + 11 * i] == ".":
+                return 3
             i += 1
     return 0
 
 def move(user_input, listed_game):
     
     listed_input = list(user_input)
-    print(len(listed_input))
     if len(listed_input) == 2 :
         try:
             move_force = int(user_input[1])
@@ -60,27 +75,59 @@ def move(user_input, listed_game):
         move_force = 1
 
     robot_position = 0
-    while(listed_game[robot_position] != 'X'):
-                robot_position += 1
 
-    if(check_wall(listed_game, robot_position, move_force, user_input) != 0):
-        print("Déplacement impossible, vous heurtez un mur")
+    while(listed_game[robot_position] != 'X'):
+        robot_position += 1
+
+    is_ok_move = check_wall(listed_game, robot_position, move_force, user_input)
+
+    if is_ok_move == 3 :
+            is_a_door = 1
     else :
-        if user_input[0] == "O": #On ne regarde que la direction
-            listed_game[robot_position], listed_game[robot_position - move_force] = listed_game[robot_position - move_force], listed_game[robot_position]
+        is_a_door = 0
+
+    if is_ok_move == 1:
+        print("Déplacement impossible, vous heurtez un mur")
+    else:
+        ''' 
+            On est sur l'arrivée ou sur une porte :
+                Si arrivée :
+                    On remplace le "U" par "X" et l'ancienne position du robot par " "
+                    pattern : destination, robot = robot, " " 
+                Si porte :
+                    On remplace dans un premier temps par " " et on retiens -> is_a_door = 1
+                    Au move suivant on replace le point grace à la position du robot
+        '''
+        
+        if user_input[0] == "O":
+            if is_a_door == 1 :
+                listed_game[robot_position - move_force], listed_game[robot_position] = listed_game[robot_position], '.'
+                is_a_door == 0
+            else:
+                listed_game[robot_position - move_force], listed_game[robot_position] = listed_game[robot_position], ' '
         elif user_input[0] == "E":
-            listed_game[robot_position], listed_game[robot_position + move_force] = listed_game[robot_position + move_force], listed_game[robot_position]
+            if is_a_door == 1 :
+                listed_game[robot_position + move_force], listed_game[robot_position] = listed_game[robot_position], '.'
+                is_a_door == 0
+            else :
+                listed_game[robot_position + move_force], listed_game[robot_position] = listed_game[robot_position], ' '
         elif user_input[0] == "N":
-            listed_game[robot_position], listed_game[robot_position - (11 * move_force)] = listed_game[robot_position - (11 * move_force)], listed_game[robot_position]
+            if is_a_door == 1:
+                listed_game[robot_position - (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], '.'
+                is_a_door == 0
+            else :
+                listed_game[robot_position - (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], ' '
         elif user_input[0] == "S":
-            listed_game[robot_position], listed_game[robot_position + (11 * move_force)] = listed_game[robot_position + (11 * move_force)], listed_game[robot_position]
-        print("".join(listed_game))
+            if is_a_door == 1:
+                listed_game[robot_position + (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], '.'
+                is_a_door == 0
+            else :
+                listed_game[robot_position + (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], ' '
 
     robot_position = 0
     i = 0
     while(listed_game[i] != 'X'):
         i += 1
     robot_position = i
-    print("Debug --> Apres mouvement la postion du robot est : {}".format(robot_position))
 
     return listed_game

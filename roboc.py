@@ -71,7 +71,6 @@ while (user_input != 'Q') :
         with open('partie_save', 'wb') as saved:
                 mon_pickler = pickle.Pickler(saved)
                 mon_pickler.dump(current_game)
-                print("Debug : Partie saved !")
         print(''.join(current_game))
         robot_position = 0
         while(listed_game[robot_position] != 'X'):
