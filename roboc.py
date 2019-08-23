@@ -1,10 +1,10 @@
 # -*-coding:Utf-8 -*
 
-"""Ce fichier contient le code principal du jeu. Exécutez-le avec Python pour lancer le jeu. """
+"""This files contains the main code of the game, launch it to begin the game """
 
 import os
 import pickle
-from fonctions import *
+from fonctions import affichage, init_game, move
 from carte import Carte
 from labyrinthe import Labyrinthe
 
@@ -24,7 +24,8 @@ for nom_fichier in os.listdir("cartes"):
                         cartes.append(map_jeu)
 
 # On affiche les cartes existantes
-print("Labyrinthes existants :")
+affichage()
+print("Available mazes : ")
 for i, carte in enumerate(cartes):
         print("  {} - {}".format(i + 1, carte.nom))
 
@@ -33,20 +34,28 @@ for i, carte in enumerate(cartes):
 for file in os.listdir():
         if file == "partie_save":
                 nb_saves += 1
-                continuer_partie = input("Il y a une partie sauvegardée souhaitez vous la continuer ? (Y / N) : ")
+                continuer_partie = input("There's a saved game, do you wan't to continue it ? (Y / N) : ")
                 continuer_partie.upper()
-                if(continuer_partie == "Y"):    
+                while (continuer_partie != 'Y' and continuer_partie != 'N'):
+                        continuer_partie = input("Please answer (Y) or (N)")
+                        continuer_partie.upper()
+                if(continuer_partie == "Y"):
                         with open(file, 'rb') as partie_en_cours:
                                 mon_depickler = pickle.Unpickler(partie_en_cours)
                                 partie = mon_depickler.load()
-                                print("On ouvre la partie saved")
+                                print("We open the saved game")
                 else: 
                         nb_saves = 0
 
 if nb_saves == 0 :
+        i = 0
+        largeur = 1
         the_game = init_game(cartes)
         print(the_game.grille)
         listed_game = list(the_game.grille)
+        while listed_game[i] != '\n':
+                i += 1
+                largeur += 1
 else : 
         the_game = partie
         listed_game = the_game
@@ -56,17 +65,16 @@ else :
 position_sortie = 0
 robot_position = 0
 
-
 while(listed_game[position_sortie] != 'U'):
         position_sortie += 1
 while(listed_game[robot_position] != 'X'):
         robot_position += 1
 
-user_input = input("Entrez une direction : \n > ")
+user_input = input("Enter a direction \n > ")
 user_input = user_input.upper()
 
 while (user_input != 'Q') :
-        current_game = move(user_input, listed_game)
+        current_game = move(user_input, listed_game, largeur)
 
         with open('partie_save', 'wb') as saved:
                 mon_pickler = pickle.Pickler(saved)
@@ -76,9 +84,9 @@ while (user_input != 'Q') :
         while(listed_game[robot_position] != 'X'):
                 robot_position += 1
         if(robot_position != position_sortie):
-                user_input = input("Entrez une direction : \n > ")
+                user_input = input("Enter a direction \n > ")
                 user_input = user_input.upper()
         else:
-                print("Vous avez gagné félicitation")
+                print("You won the game ! Congratulation")
                 exit(0)
 

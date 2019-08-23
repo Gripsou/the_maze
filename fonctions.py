@@ -10,18 +10,20 @@ def init_game(cartes):
     """On génère un objet labyrinthe suivant le choix du joueur"""
     choix_partie = input("Sur quelle partie souhaitez vous jouer : ")
     try:
-        choix_partie = int(choix_partie) - 1 #-1 pour decaller par rapport à l'index 0 
+        choix_partie = int(choix_partie) - 1 #-1 pour decaller par rapport à l'index 0
+        laby = creer_labyrinthe_depuis_chaine(cartes[choix_partie].chaine)
         if choix_partie < 0:
             raise ValueError("Veuillez entrer un nombre positif")
-    except ValueError:
+    while 
         print("Veuillez entrer une valeur numérique")
     except IndexError:
         print("Veuillez choisir une carte existante")
+    except AttributeError:
+        print("Veuillez entrer une carte existante")
     else:
-        laby = creer_labyrinthe_depuis_chaine(cartes[choix_partie].chaine)
         return laby
 
-def check_wall(listed_game, robot_position, move_force, user_input):
+def check_wall(listed_game, robot_position, move_force, user_input, largeur):
     i = 1
     if(user_input[0] == "O"):
         while(i <= move_force):
@@ -44,28 +46,29 @@ def check_wall(listed_game, robot_position, move_force, user_input):
     elif(user_input[0] == "N"):
         #On va checker la ligne correspondante soit la position_robor - largeur du tableau + 1 (pour le \n) * le nb de case que l'on veut monter
         while(i <= move_force):
-            if listed_game[robot_position - 11 * i] == "O":
+            if listed_game[robot_position - largeur * i] == "O":
                 return 1
-            elif listed_game[robot_position - 11 * i] == "U":
+            elif listed_game[robot_position - largeur * i] == "U":
                 return 2
-            elif listed_game[robot_position - 11 * i] == ".":
+            elif listed_game[robot_position - largeur * i] == ".":
                 return 3
             i += 1
     elif(user_input[0] == "S"):
         #Pareil que pour N sauf qu'on additionne à la largeur du tab pour regarder une case plus bas
         while(i <= move_force):
-            if listed_game[robot_position + 11 * i] == "O":
+            if listed_game[robot_position + largeur * i] == "O":
                 return 1
-            elif listed_game[robot_position + 11 * i] == "U":
+            elif listed_game[robot_position + largeur * i] == "U":
                 return 2
-            elif listed_game[robot_position + 11 * i] == ".":
+            elif listed_game[robot_position + largeur * i] == ".":
                 return 3
             i += 1
     return 0
 
-def move(user_input, listed_game):
+def move(user_input, listed_game, largeur):
     
     listed_input = list(user_input)
+    
     if len(listed_input) == 2 :
         try:
             move_force = int(user_input[1])
@@ -79,7 +82,7 @@ def move(user_input, listed_game):
     while(listed_game[robot_position] != 'X'):
         robot_position += 1
 
-    is_ok_move = check_wall(listed_game, robot_position, move_force, user_input)
+    is_ok_move = check_wall(listed_game, robot_position, move_force, user_input, largeur)
 
     if is_ok_move == 3 :
             is_a_door = 1
@@ -113,16 +116,16 @@ def move(user_input, listed_game):
                 listed_game[robot_position + move_force], listed_game[robot_position] = listed_game[robot_position], ' '
         elif user_input[0] == "N":
             if is_a_door == 1:
-                listed_game[robot_position - (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], '.'
+                listed_game[robot_position - (largeur * move_force)], listed_game[robot_position] = listed_game[robot_position], '.'
                 is_a_door == 0
             else :
-                listed_game[robot_position - (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], ' '
+                listed_game[robot_position - (largeur * move_force)], listed_game[robot_position] = listed_game[robot_position], ' '
         elif user_input[0] == "S":
             if is_a_door == 1:
-                listed_game[robot_position + (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], '.'
+                listed_game[robot_position + (largeur * move_force)], listed_game[robot_position] = listed_game[robot_position], '.'
                 is_a_door == 0
             else :
-                listed_game[robot_position + (11 * move_force)], listed_game[robot_position] = listed_game[robot_position], ' '
+                listed_game[robot_position + (largeur * move_force)], listed_game[robot_position] = listed_game[robot_position], ' '
 
     robot_position = 0
     i = 0
@@ -131,3 +134,35 @@ def move(user_input, listed_game):
     robot_position = i
 
     return listed_game
+
+def affichage():
+    '''Print the beggining of the game'''
+
+    print("\t****************************************************")
+    print("\t****************//////////+\\\\\\\\\\\\\\\\ ****************")
+    print("\t****************|                  |****************")
+    print("\t****************|     The Maze     |****************")
+    print("\t****************|                  |****************")
+    print("\t****************+\\\\\\\\\\\\\\\\+///////// ****************")
+    print("\t****************************************************")
+
+    menu = input("Welcome to the Maze, do you want to know the rules ? (Y) / (N) : ")
+    print("\n")
+    menu.upper()
+    while(menu != 'Y' and menu != 'N'):
+        menu = input("Please reply by tipping 'Y' or 'N'")
+        menu.upper()
+    
+    if menu == 'Y':
+            print("You are a little robot 'X' and your goal is to reach the end of the maze symbolized by the caracter 'U'.")
+            print("You can't break through the wall 'O' but you can pass doors '.' !")
+            print("To move across the maze : ")
+            print("N > North")
+            print("S > South")
+            print("E > East")
+            print("O > Ouest (sorry about the non french players)")
+
+            print("Q > Quit the game")
+            print()
+            print('Good game ! ')
+            print()
