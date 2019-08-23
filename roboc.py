@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 
-"""This files contains the main code of the game, launch it to begin the game """
+"""This files contains the main code of the game, run it to begin the game """
 
 import os
 import pickle
@@ -25,27 +25,31 @@ for nom_fichier in os.listdir("cartes"):
 
 # On affiche les cartes existantes
 affichage()
+
+for file in os.listdir():
+        if file == "partie_save":
+                nb_saves += 1
+                continuer_partie = input(
+                    "There's a saved game, do you wan't to continue it ? (Y / N) : ")
+                continuer_partie = continuer_partie.upper()
+                while (continuer_partie != 'Y' and continuer_partie != 'N'):
+                        continuer_partie = input("Please answer (Y) or (N)")
+                        continuer_partie = continuer_partie.upper()
+                if(continuer_partie == "Y"):
+                        with open(file, 'rb') as partie_en_cours:
+                                mon_depickler = pickle.Unpickler(
+                                    partie_en_cours)
+                                partie = mon_depickler.load()
+                                print("We open the saved game")
+                else:
+                        nb_saves = 0
+
+
 print("Available mazes : ")
 for i, carte in enumerate(cartes):
         print("  {} - {}".format(i + 1, carte.nom))
 
 #Si il y a une partie sauvegardée on l'affiche
-
-for file in os.listdir():
-        if file == "partie_save":
-                nb_saves += 1
-                continuer_partie = input("There's a saved game, do you wan't to continue it ? (Y / N) : ")
-                continuer_partie.upper()
-                while (continuer_partie != 'Y' and continuer_partie != 'N'):
-                        continuer_partie = input("Please answer (Y) or (N)")
-                        continuer_partie.upper()
-                if(continuer_partie == "Y"):
-                        with open(file, 'rb') as partie_en_cours:
-                                mon_depickler = pickle.Unpickler(partie_en_cours)
-                                partie = mon_depickler.load()
-                                print("We open the saved game")
-                else: 
-                        nb_saves = 0
 
 if nb_saves == 0 :
         i = 0
