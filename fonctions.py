@@ -60,15 +60,17 @@ def check_wall(listed_game, robot_position, move_force, user_input, largeur):
             i += 1
     return 0
 
-def move(user_input, listed_game, largeur):
+def move(user_input, listed_game, largeur): 
     
     listed_input = list(user_input)
     
     if len(listed_input) == 2 :
-        try:
-            move_force = int(user_input[1])
-        except :
-            print("Please type a valid number as second argument")
+        while True:
+            try:
+                move_force = int(user_input[1])
+                break
+            except :
+                user_input = input("Please type a valid move -> direction + strength : ")
     else :
         move_force = 1
 
@@ -157,6 +159,8 @@ def affichage():
             print("S > South")
             print("E > East")
             print("O > Ouest (sorry about the non french players)")
+
+            print("All of these can be multiply by the number of time you want to do it : example N4 to go north 4 time")
 
             print("Q > Quit the game")
             print()
