@@ -1,6 +1,6 @@
 # -*-coding:Utf-8 -*
 
-"""This files contains the main code of the game, run it to begin the game """
+"""This files contains the main code of the game, run it to begin the game"""
 
 import os
 import pickle
@@ -49,7 +49,7 @@ print("Available mazes : ")
 for i, carte in enumerate(cartes):
         print("  {} - {}".format(i + 1, carte.nom))
 
-#Si il y a une partie sauvegardée on l'affiche
+# Si il y a une partie sauvegardée on l'affiche
 
 if nb_saves == 0 :
         i = 0
